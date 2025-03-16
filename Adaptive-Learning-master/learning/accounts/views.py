@@ -94,26 +94,8 @@ def Register(request):
         NewUser = User.objects.create_user(username=request.POST['username'],email=request.POST['mail'],
             first_name=request.POST['first_name'],last_name=request.POST['last_name'])
         NewUser.set_password(request.POST['pass'])
-        NewUser.is_active = False
+        NewUser.is_active = True
         NewUser.save()
-
-        current_site = get_current_site(request)
-        mail_subject = 'Activate Your Account'
-        message = render_to_string(
-            'acc_activate_email.html',{
-            'user':NewUser,
-            'domain':current_site.domain,
-            'uid':urlsafe_base64_encode(force_bytes(NewUser.pk)),
-            'token':default_token_generator.make_token(NewUser)
-            })
-
-        to_mail = request.POST['mail']
-        email_object = EmailMessage(
-            subject=mail_subject,
-            body=message,
-            to=[to_mail]
-            )
-        email_object.send()
 
         UD.name = NewUser
         UD.fullname = request.POST['first_name']+" "+request.POST['last_name']
@@ -128,13 +110,44 @@ def Register(request):
 
         UD.save()
         return render(request,'thanks.html',{
-            'message':'Bingo!! Just one step to go.You may now go ahead and verify yourself with the verification link sent to your email-id',
+            'message':'You may now go ahead and login.',
             'user':request.POST['first_name']
             })
     else:
         return render(request,'register.html',{
 
             })
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from .forms import SignUpForm, StudentProfileForm
+
+def register(request):
+    if request.method == "POST":
+        user_form = SignUpForm(request.POST)
+        profile_form = StudentProfileForm(request.POST)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            # Create User
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])  # Hash password
+            user.save()
+
+            # Create Student Profile
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+
+            return render(request,'thanks.html',{
+            'message':'You may now go ahead and login.',
+            'user':request.POST['first_name']
+            })    
+    else:
+        user_form = SignUpForm()
+        profile_form = StudentProfileForm()
+
+    return render(request, 'register.html', {'user_form': user_form, 'profile_form': profile_form})
 
 #for activating the inactive account.
 def activate(request,uidb64,token):

@@ -1,5 +1,6 @@
 from django.urls import path,include
 from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView,PasswordResetConfirmView,PasswordResetCompleteView
+from django.contrib.auth import views as auth_views
 
 from .forms import *
 from .views import *
@@ -9,10 +10,12 @@ app_name = 'accounts'
 urlpatterns = [
     
     #one for logout also!!
-    path('',login, name='login'),
-    path('register/', Register, name='register'),
-    path('logout/', logout, name='logout'),
-    
+    path('' ,dashboard, name='dashboard'),
+    path('register/', register, name='register'),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
     path('coursedetail/<int:course_id>/',coursedetail, name='coursedetail'),
     path('contact/<int:stu_id>/',contact, name='contact'),
     path('contactsave',contactsave, name='contactsave'),

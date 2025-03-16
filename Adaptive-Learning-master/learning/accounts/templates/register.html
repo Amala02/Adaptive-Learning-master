@@ -1,105 +1,163 @@
 {% extends 'base.html' %}
-{% block banner %}
-<h1 class="text-white" style="font-family: Roboto Mono Light">
-            Register
-          </h1>
-          <p class="mx-auto text-white  mt-20 mb-40">
-            Create a new account
-          </p>
 
+{% block banner %}
+<h1 class="text-white" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
+    Register
+</h1>
+<p class="mx-auto text-white mt-20 mb-40" style="font-family: 'Poppins', sans-serif;">
+    Create a new account with accessibility features
+</p>
 {% endblock %}
 
 {% block content %}
 <br><br>
 <div class="container">
-    <div class="row">
-    <div class="offset-lg-3 col-md-6">
-<div class="card">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card" style="border-radius: 16px; overflow: hidden; box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);">
+                <h3 class="card-header text-center py-4" style="background: #59323c; color: white; font-family: 'Poppins', sans-serif; font-weight: 600;">
+                    <strong>Register</strong>
+                </h3>
+                <div class="card-body px-lg-5 pt-4">
+                    <form class="text-center" style="color: #333;" action="{% url 'accounts:register' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Full Name -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Full Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Your Full Name" name="full_name" required style="font-family: 'Poppins', sans-serif;">
+                        </div>
+                        
+                        <!-- Username -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Username</label>
+                            <input type="text" class="form-control" placeholder="Choose a Username" name="username" required style="font-family: 'Poppins', sans-serif;">
+                        </div>
 
-    <h3 class="card-header info-color white-text text-center py-4" style="font-family: Roboto Mono Light">
-        <strong>Register</strong>
-    </h3>
+                        <!-- Password -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Password</label>
+                            <input type="password" class="form-control" placeholder="Enter a Secure Password" name="pass" required style="font-family: 'Poppins', sans-serif;">
+                        </div>
 
-    <!--Card content-->
-    <div class="card-body px-lg-5 pt-0">
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Confirm Password</label>
+                            <input type="password" class="form-control" placeholder="Re-enter Password" name="cpass" required style="font-family: 'Poppins', sans-serif;">
+                        </div>
 
-        <!-- Form -->
-        <form class="text-center" style="color: #757575;"  action="{% url 'accounts:register' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <!-- Name -->
-            <div class="md-form mt-3">
-                <label for="materialContactFormName">First Name</label>
-                <input type="text" id="materialContactFormName" class="form-control" placeholder="Enter Your First Name" name="first_name" required>
+                        <!-- Email -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Email</label>
+                            <input type="email" class="form-control" placeholder="Enter Your Email" name="mail" required style="font-family: 'Poppins', sans-serif;">
+                        </div>
+
+                        <!-- Contact No -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Contact No.</label>
+                            <input type="tel" class="form-control" placeholder="Enter Your Contact Number" name="mob" required style="font-family: 'Poppins', sans-serif;">
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Gender</label>
+                            <select class="form-control" name="gender" style="font-family: 'Poppins', sans-serif;">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Date of Birth -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Date of Birth</label>
+                            <input type="date" class="form-control" name="dob" required style="font-family: 'Poppins', sans-serif;">
+                        </div>
+                        
+                        <!-- Address -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Address</label>
+                            <textarea class="form-control" rows="2" name="address" placeholder="Enter your address" style="font-family: 'Poppins', sans-serif;"></textarea>
+                        </div>
+
+                        <!-- Disabilities (Autism-Specific) -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Do you have any specific learning needs?</label>
+                            <select class="form-control" name="disability" style="font-family: 'Poppins', sans-serif;">
+                                <option value="none">None</option>
+                                <option value="asd">Autism Spectrum Disorder (ASD)</option>
+                                <option value="twice-exceptional">Twice-Exceptional Learner</option>
+                                <option value="other">Other (Specify in Bio)</option>
+                            </select>
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="form-group mb-4">
+                            <label style="font-family: 'Poppins', sans-serif; font-weight: 500;">Tell us about yourself</label>
+                            <textarea class="form-control" rows="3" name="bio" placeholder="Your background, interests, or specific needs" style="font-family: 'Poppins', sans-serif;"></textarea>
+                        </div>
+                        
+                        <!-- Account Type -->
+                        <div class="form-group mb-4">
+                            <p style="font-family: 'Poppins', sans-serif; font-weight: 500;">Account Type:</p>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" value="student" checked>
+                                <label class="form-check-label" style="font-family: 'Poppins', sans-serif;">Student</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" value="teacher">
+                                <label class="form-check-label" style="font-family: 'Poppins', sans-serif;">Teacher</label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button class="btn btn-primary btn-block" style="background-color: #59323c; border-radius: 25px; padding: 12px 24px; transition: 0.3s; font-family: 'Poppins', sans-serif; font-weight: 500;">
+                            Create Account
+                        </button>
+                    </form>
+                </div>
             </div>
-
-            <div class="md-form mt-3">
-                <label for="materialContactFormName">Last Name</label>
-                <input type="text" id="materialContactFormName" class="form-control" placeholder="Enter Your Last Name" name="last_name" required>
-            </div>
-
-            <!-- E-mail -->
-            <div class="md-form mt-3">
-                {%if user_exist %}
-                    <div class="alert alert-danger">
-                       <a class="close" href="#" data-dismiss="alert">×</a>
-                          {{ user_exist }}
-                    </div>
-                {% endif %}
-                <label for="materialContactFormEmail">Username</label>
-                <input type="text" id="materialContactFormEmail" class="form-control" placeholder="Enter your username" name="username" required>
-            </div>
-
-            <div class="md-form mt-3">
-                {%if message_password %}
-                    <div class="alert alert-danger">
-                       <a class="close" href="#" data-dismiss="alert">×</a>
-                          {{ message_password }}
-                    </div>
-                {% endif %}
-                <label for="materialContactFormEmail">Password</label>
-                <input type="password" id="materialContactFormEmail" class="form-control" placeholder="Enter your password(min. 6 characters)" name="pass" required>
-            </div>
-
-            <div class="md-form mt-3">
-                <label for="materialContactFormEmail">Confirm Password</label>
-                <input type="password" id="materialContactFormEmail" class="form-control" placeholder="Re-Enter your password" name="cpass" required>
-            </div>
-
-            <div class="md-form mt-3">
-                <label for="materialContactFormEmail">Email</label>
-                <input type="email" id="materialContactFormEmail" class="form-control" name="mail" placeholder="Enter your E-mail address : abc@tmail.com" required>
-            </div>
-
-            <div class="md-form mt-3">
-                <label for="materialContactFormEmail">Contact No.</label>
-                <input type="tel" id="materialContactFormEmail" class="form-control" name="mob" placeholder="Enter your phone number : +91-1234567892" required>
-            </div>
-
-
-            <!--Message-->
-            <div class="md-form mt-3">
-                <label for="materialContactFormMessage">Bio</label>
-                <textarea id="materialContactFormMessage" class="form-control md-textarea" rows="3" name="bio" placeholder="Tell us something about Yourself" required></textarea>
-            </div>
-
-            <p>Please select your account type:</p>
-            <input type="radio" id="male" name="type" value="student">
-            <label for="male">Student</label><br>
-            <input type="radio" id="female" name="type" value="teacher">
-            <label for="female">Teacher</label><br>
-
-            <!-- Copy -->
-            <!-- Send button -->
-            <button class="btn btn-warning btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">Create account</button>
-
-        </form>
-        <!-- Form -->
-
+        </div>
     </div>
+</div>
 
-</div>
-</div>
-    </div>
-</div>
+<!-- Inline CSS for Modern Look -->
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+        padding: 12px;
+        transition: all 0.3s ease-in-out;
+        font-size: 14px;
+    }
+    .form-control:focus {
+        border-color: #59323c;
+        box-shadow: 0 0 8px rgba(89, 50, 60, 0.3);
+    }
+    .btn-primary {
+        background-color: #59323c;
+        border: none;
+        font-size: 16px;
+    }
+    .btn-primary:hover {
+        background-color: #45262f;
+        transform: scale(1.02);
+    }
+    .form-group label {
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .card {
+        border: none;
+    }
+    .card-header {
+        font-size: 20px;
+    }
+</style>
+
+<!-- Add Poppins Font from Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 {% endblock %}
