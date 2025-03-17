@@ -40,15 +40,12 @@
                      onblur="this.placeholder = 'password'" style="font-family: Roboto Mono Light;">
                   </div>
                 </div>
-
-                
-                
                 <button style="font-family: Roboto Mono Light;" class="btn btn-rounded btn-primary btn-block z-depth-0 my-4 waves-effect" type="submit" name="signin" value="signin">Sign In</button>
-
-                <button style="font-family: Roboto Mono Light;" class="btn btn-rounded btn-success btn-block z-depth-0 my-4 waves-effect" type="submit" name="signup" value="signup">Sign Up</button>
-
-
-            </form>
+       </form>
+       <form action="{% url 'accounts:register' %}" method="GET">
+    <button style="font-family: Roboto Mono Light;" class="btn btn-rounded btn-success btn-block z-depth-0 my-4 waves-effect" type="submit">
+        Sign Up
+    </button>
             <p class="text-center"><a href="{% url 'accounts:password_reset' %}" class="ml-2">Forgot Password?</a></p>
           </div>
     </div>

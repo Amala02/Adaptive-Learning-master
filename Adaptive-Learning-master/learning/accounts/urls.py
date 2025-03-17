@@ -12,8 +12,8 @@ urlpatterns = [
     #one for logout also!!
     path('' ,dashboard, name='dashboard'),
     path('register/', register, name='register'),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-
+    path('login/', login, name='login'),
+    path('thanks/', thanks, name='thanks'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
     path('coursedetail/<int:course_id>/',coursedetail, name='coursedetail'),

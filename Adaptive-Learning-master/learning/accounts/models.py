@@ -1,41 +1,39 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password, check_password
 
-class StudentProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    age = models.IntegerField()
-    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')])
-    contact = models.CharField(max_length=15)
-    
-    # Autism-Related Fields
-    communication = models.CharField(max_length=50, choices=[
-        ('Verbal', 'Verbal'),
-        ('Non-verbal', 'Non-verbal'),
-        ('Sign Language', 'Sign Language'),
-        ('AAC Device', 'AAC Device'),
+class User(models.Model):
+    # Personal Information
+    full_name = models.CharField(max_length=255)
+    username = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)  # Store hashed passwords
+    contact_no = models.CharField(max_length=15)
+    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
+    age_range = models.CharField(max_length=20, choices=[
+        ('kindergarten', 'Kindergarten (3-6 years)'),
+        ('elementary', 'Elementary (6-12 years)'),
+        ('high_school', 'High School (12-18 years)'),
+        ('adult', 'Adult Learner (18+ years)'),
     ])
-    
-    sensory = models.CharField(max_length=100, choices=[
-        ('Low-Light', 'Low Light Environment'),
-        ('Noise-Free', 'Noise-Free Environment'),
-        ('Visual Learning', 'Prefers Visual Learning'),
-        ('Tactile Learning', 'Prefers Tactile Learning'),
+    date_of_birth = models.DateField()
+    address = models.TextField()
+    disability = models.CharField(max_length=50, choices=[
+        ('none', 'None'),
+        ('asd', 'Autism Spectrum Disorder (ASD)'),
+        ('twice-exceptional', 'Twice-Exceptional Learner'),
+        ('other', 'Other (Specify in Bio)'),
     ])
-    
-    learning_style = models.CharField(max_length=50, choices=[
-        ('Visual', 'Visual Learner'),
-        ('Auditory', 'Auditory Learner'),
-        ('Kinesthetic', 'Kinesthetic Learner'),
-        ('Reading/Writing', 'Reading/Writing Learner'),
-    ])
-    
-    strengths = models.TextField()
-    challenges = models.TextField()
-    additional_info = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    account_type = models.CharField(max_length=10, choices=[('student', 'Student'), ('teacher', 'Teacher')], default='student')
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
 
     def __str__(self):
-        return self.user.username
-
+        return self.username
 
 class Userdetail(models.Model):
     name = models.ForeignKey(User, on_delete=models.CASCADE)

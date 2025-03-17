@@ -11,21 +11,37 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
 			msg = ('There is no User registered with the specified E-mail address.')
 			self.add_error('email',msg)
 		return email
-	
-
 from django import forms
-from django.contrib.auth.models import User
-from .models import StudentProfile
+from .models import User
 
-class SignUpForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-field', 'placeholder': 'Enter password'}))
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-field', 'placeholder': 'Confirm password'}))
-    
+class RegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = [
+            'full_name', 'username', 'email', 'password', 'contact_no', 'gender', 
+            'age_range', 'date_of_birth', 'address', 'disability', 'bio', 'account_type'
+        ]
 
-class StudentProfileForm(forms.ModelForm):
-    class Meta:
-        model = StudentProfile
-        exclude = ['user']  # We handle the user manually in the view
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError("Passwords do not match.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)

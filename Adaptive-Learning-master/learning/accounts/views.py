@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.contrib import auth
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -28,126 +26,49 @@ from quizzes.models import CreateQuiz_1
 
 UserModel = get_user_model()
 
-#Signin - forgot password + signin with google accounts/github/linkedin accounts.
-def login(request):
+from django.shortcuts import render, redirect
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate
+from .forms import RegistrationForm, LoginForm
+from .models import User
+
+def register(request):
     if request.method == 'POST':
-        print(request.POST.get('signin'))
-        if request.POST.get('signin'):
-            user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
-            if user is not None:
-
-                auth.login(request, user)
-                det = Userdetail.objects.filter(name=request.user).first()
-                if det.teacher == True:
-                    det = Userdetail.objects.filter(name=request.user).first()
-                    courses = Course.objects.filter(author=request.user)
-                    return render(request, 'dashboard.html', {'det': det, 'course': courses})
-                else:
-                    cour = Enroll.objects.filter(student=request.user)
-                    det = Userdetail.objects.filter(name=request.user).first()
-                    return render(request, 'studentdash.html', {'course': cour, 'det': det})
-
-            #if username or password is incorrect.
-            else:
-                return render(request, 'login.html',{
-                    'message':'Username or Password is incorrect'
-                    })
-
-        elif request.POST.get('signup'):
-            return render(request,'register.html',{})
-
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return redirect('thanks')  # Redirect to a thanks page after registration
     else:
-        return render(request,'login.html',{})
+        form = RegistrationForm()
+    return render(request, 'register.html', {'form': form})
 
+def login(request):
+    message = None
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            try:
+                user = User.objects.get(username=username)
+                if user.check_password(password):
+                    # Simulate Django's auth login
+                    request.session['user_id'] = user.id
+                    return redirect('home')  # Redirect to home page after login
+                else:
+                    message = "Invalid password."
+            except User.DoesNotExist:
+                message = "User does not exist."
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form, 'message': message})
+
+def thanks(request):
+    return render(request, 'thanks.html')
 #Logout section
 def logout(request):
     auth.logout(request)
     return render(request,'login.html',{})
-
-
-#register a new user : signUp
-def Register(request):
-    if request.method == 'POST':
-        UD = Userdetail()
-
-        user_list = []
-        for user in User.objects.values_list('username'):
-            user_list.append(user[0])
-
-         # if the username is already taken or not.
-        if request.POST['username'] in user_list:
-            return render(request,'register.html',{
-                    'user_exist':'Username is already taken'
-                    })
-
-        #Check for password mismatch.
-        if request.POST['pass'] == request.POST['cpass']:
-            if len(request.POST['pass'])<6:
-                return render(request,'register.html',{
-                    'message_password':'password too short'
-                    })
-        else:
-            return render(request,'register.html',{
-                'message_password':'password mismatch'
-                })
-
-        NewUser = User.objects.create_user(username=request.POST['username'],email=request.POST['mail'],
-            first_name=request.POST['first_name'],last_name=request.POST['last_name'])
-        NewUser.set_password(request.POST['pass'])
-        NewUser.is_active = True
-        NewUser.save()
-
-        UD.name = NewUser
-        UD.fullname = request.POST['first_name']+" "+request.POST['last_name']
-        UD.bio = request.POST['bio']
-        UD.email = request.POST['mail']
-        UD.mob = request.POST['mob']
-
-        if request.POST['type'] == 'teacher':
-            UD.teacher = True
-        else:
-            UD.teacher = False
-
-        UD.save()
-        return render(request,'thanks.html',{
-            'message':'You may now go ahead and login.',
-            'user':request.POST['first_name']
-            })
-    else:
-        return render(request,'register.html',{
-
-            })
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import login
-from .forms import SignUpForm, StudentProfileForm
-
-def register(request):
-    if request.method == "POST":
-        user_form = SignUpForm(request.POST)
-        profile_form = StudentProfileForm(request.POST)
-        
-        if user_form.is_valid() and profile_form.is_valid():
-            # Create User
-            user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password'])  # Hash password
-            user.save()
-
-            # Create Student Profile
-            profile = profile_form.save(commit=False)
-            profile.user = user
-            profile.save()
-
-            return render(request,'thanks.html',{
-            'message':'You may now go ahead and login.',
-            'user':request.POST['first_name']
-            })    
-    else:
-        user_form = SignUpForm()
-        profile_form = StudentProfileForm()
-
-    return render(request, 'register.html', {'user_form': user_form, 'profile_form': profile_form})
 
 #for activating the inactive account.
 def activate(request,uidb64,token):

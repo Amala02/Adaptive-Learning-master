@@ -17,7 +17,7 @@
   <!-- meta character set -->
   <meta charset="UTF-8" />
   <!-- Site Title -->
-  <title>EDUSQUAD</title>
+  <title>EDUSFLEX</title>
 
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display:900|Roboto:400,400i,500,700" rel="stylesheet" />
   <!--
@@ -52,7 +52,7 @@
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="lnr lnr-menu"> EDUSQUAD </span>
+          <span class="lnr lnr-menu"> EDUFLEX </span>
         </button>
 
         {% if user.is_authenticated %}
@@ -84,25 +84,57 @@
   </header>
 
     
-  <!-- ================ End Header Area ================= -->
-<!-- ================ start banner Area ================= -->
-  <section class="home-banner-area" >
-    <div class="container" >
-      <div class="row justify-content-center  align-items-center">
-        <div class="col-lg-5 col-md-8 home-banner-left">
-          {% block banner %}
-            {% endblock %}
-        </div>
-        <div class="offset-lg-2 col-lg-5 col-md-12 home-banner-right">
-          <img class="img-fluid" src="{% static 'img/header-img.png' %}" alt="" />
-        </div>
+<!-- ================ Start Banner Area ================= -->
+<section class="home-banner-area">
+  <div class="container">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-lg-5 col-md-8 home-banner-left text-center">
+        {% block banner %}{% endblock %}
+      </div>
+      <div class="offset-lg-2 col-lg-5 col-md-12 home-banner-right">
+        <img class="img-fluid" src="{% static 'img/header-img.png' %}" alt="" />
       </div>
     </div>
-  </section>
-  <!-- ================ End banner Area ================= -->
+  </div>
+</section>
+<!-- ================ End Banner Area ================= -->
 
-  {% block content %}
-{% endblock %}
+{% block content %}{% endblock %}
+
+<style>
+  .home-banner-area {
+    background: linear-gradient(135deg, #240e0b, #59323c);
+    padding: 80px 0;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .home-banner-left h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  .home-banner-left p {
+    font-size: 18px;
+    color: #f5e6e8;
+  }
+
+  .home-banner-left .btn {
+    background-color: #d4a373;
+    color: #240e0b;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .home-banner-left .btn:hover {
+    background-color: #b5835a;
+    color: #ffffff;
+  }
+</style>
 
   <!-- ================ start footer Area ================= -->
   <footer class="footer-area section-gap">
